@@ -1,5 +1,5 @@
-import ast
-import importlib
+import re
+
 import pickle
 from types import FunctionType
 from pprint import pprint
@@ -10,7 +10,6 @@ class Manager():
     def variable(self,x,y=None):
         keys=self.variables.keys()
         if y:
-            print("x already existed as s ")
             self.variables[x]=y
         else:
             if x in keys:
@@ -19,7 +18,7 @@ class Manager():
                 return self.variables[x]
             else:
                 print("only this values exists as variables ",keys)
-    def function(self,name,arguments,func=None):
+    def function(self,name,arguments,func=None ):
             # importing the module
         if func:
         # function at run-time
@@ -29,16 +28,10 @@ class Manager():
             # calliong the function
             print(self.variables[name](*arguments))
 
-class Module():
-    def __init__(self,manager,dep) -> None:
-        manager.dependecies.append(dep)
-        print(dep)
-class Var():
-    def __init__(self,manager,name,value) -> None:
-        
+
+def Var(manager,name,value): 
         manager.variable(name,value)  
-class Func():     
-    def __init__(self,manager,name,arguments,function,ret_type) -> None:
+def Func(manager,name,function,ret_type,arguments=None) -> None:
         manager.function(name,arguments,func=[function, ret_type, "exec"])
         
 
@@ -54,14 +47,50 @@ def load():
         return pickle.load(f)
 def main():
     m=Manager()
-    with open(r"C:\Users\ADMIN\OneDrive\Desktop\amani\node based live sys\test.py","r") as f:
-        p=ast.parse(f.read())
-    for i in ast.walk(p):
-        print(i)
-        print(i.__dict__)
+    with open(r"test.py","r") as f:
+        file_read=f.read()
+    
+    tab="   "
+    module_list=[]
+    function=False
+    functions_in_script=[]
+    function_list=[]
+    variables={}
+    lines=file_read.split("\n")
+    lines.append("#commment to add extra loop run")
+    for i in lines:
+        tab_count=i.count(tab,0,len(i))
+        if tab_count==0:
+            if function:
+                functions_in_script.append("\n".join(function_list))
+                function_list.clear()
+            function=False  
+            if i.__contains__("def"):
+                function_list.append(i)
+                function=True
+                continue
+            elif i.__contains__("="):
+                var_split=i.split("=")
+                variables[var_split[0]]=var_split[1]
+                continue
+        if function:
+            function_list.append(i)
+    print(functions_in_script)
+    print(variables)
+    for x,y in variables.items():
+        Var(m,x,y)
+    for i in functions_in_script:
+        result = re.search('def (.*)', i)
+        r=result.group(1)
+        r=r.split("(")[0]
+        print(r)
+        Func(manager=m, name=r,function=i,ret_type="<list>" )#name #function
 
-    print(m.dependecies)
-    print(m.variables)
+            
+
+        
+        
+
 """
 if type(k)=="module":
 Module(m,k)
