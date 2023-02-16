@@ -41,7 +41,7 @@ def main(file="test.py"):
     All[file]={}
     All[file]["variables"]=variables
     All[file]["function"]=functions_in_script       
-
+    
         
         
 

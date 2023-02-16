@@ -1,8 +1,8 @@
 import re
+from parsers import *
 
 from types import FunctionType
 from pprint import pprint
-All={}
 class Manager():
     def __init__(self) -> None:
         self.variables={}
@@ -52,6 +52,7 @@ def main(file="test.py"):
         r=r.split("(")[0]
         print(r)
         Func(manager=m, name=r,function=i,ret_type="<list>" )#name #function
+        print(m.variables["n1"])
         
         
 
@@ -69,3 +70,4 @@ print(m.variables)
 # generate variable modules and dependecies from code
 #run newly found code
 main()
+
