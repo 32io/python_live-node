@@ -1,29 +1,18 @@
-All={}
+
 
 import firebase_admin
 from firebase_admin import credentials
 
-cred = credentials.Certificate("live-node-firebase-adminsdk-53jk9-f26391514d.json")
-firebase_admin.initialize_app(cred)
-import firebase_admin
-from firebase_admin import credentials
 from firebase_admin import db
-
-# Fetch the service account key JSON file contents
-cred = credentials.Certificate('path/to/serviceAccountKey.json')
-
+All={}
+cred = credentials.Certificate("live-node-firebase-adminsdk-53jk9-f26391514d.json")
 # Initialize the app with a service account, granting admin privileges
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://databaseName.firebaseio.com'
 })
-
 # As an admin, the app has access to read and write all data, regradless of Security Rules
-ref = db.reference('restricted_access/secret_document')
-print(ref.get())
-
+ref = db.reference('All')
 def save(m):
-    with open("Manager.m","wb") as f:
-        pickle.dump(m,f)
+    ref.set(All)
 def load():
-    with open("Manager.m","rb") as f:
-        return pickle.load(f)
+   All=ref.get()
